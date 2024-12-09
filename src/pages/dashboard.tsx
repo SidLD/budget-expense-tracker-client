@@ -306,7 +306,7 @@ export default function Dashboard() {
                       ) : (
                         <>
                           <div>{expense.description}</div>
-                          <div>${expense.value}</div>
+                          <div>₱{expense.value}</div>
                           <div>{new Date(expense.date).toLocaleDateString()}</div>
                           <button
                             onClick={() => {
@@ -331,7 +331,7 @@ export default function Dashboard() {
                   ))}
                 </div>
                 <div className="mt-4 font-bold">
-                  Total: ${expenses.reduce((sum, expense) => sum + expense.value, 0)}
+                  Total: ₱{expenses.reduce((sum, expense) => sum + expense.value, 0)}
                 </div>
               </div>
             )}
@@ -347,13 +347,13 @@ export default function Dashboard() {
                 </div>
                 <div className="w-full max-w-md space-y-2">
                   <p className="text-lg text-gray-700">
-                    <span className="font-semibold">Current Budget:</span> {budget !== null ? `$${budget}` : 'Not set'}
+                    <span className="font-semibold">Current Budget:</span> {budget !== null ? `${budget}` : 'Not set'}
                   </p>
                   <p className="text-lg text-gray-700">
-                    <span className="font-semibold">Total Expenses:</span> ${expenses.reduce((sum, expense) => sum + expense.value, 0)}
+                    <span className="font-semibold">Total Expenses:</span> ₱{expenses.reduce((sum, expense) => sum + expense.value, 0)}
                   </p>
                   <p className="text-lg text-gray-700">
-                    <span className="font-semibold">Remaining Budget:</span> {calculateRemainingBudget() !== null ? `$${calculateRemainingBudget()}` : 'N/A'}
+                    <span className="font-semibold">Remaining Budget:</span> {calculateRemainingBudget() !== null ? `₱${calculateRemainingBudget()}` : 'N/A'}
                   </p>
 
                   <div className="flex flex-col items-center mt-2">
