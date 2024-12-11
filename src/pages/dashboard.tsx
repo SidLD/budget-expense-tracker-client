@@ -305,6 +305,7 @@ export default function Dashboard() {
                             onChange={(e) => setUpdatedDate(e.target.value)}
                             className="p-1 border rounded"
                           />
+                          
                           <button
                             onClick={() => handleUpdateExpense(expense._id)}
                             className="px-2 py-1 text-white bg-green-500 rounded hover:bg-green-600"
