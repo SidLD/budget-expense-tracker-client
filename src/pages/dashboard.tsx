@@ -10,8 +10,8 @@ export default function Dashboard() {
   const user = auth.getUserInfo()
   const [budget, setBudgetState] = useState<number | null>(null)
   const [expenses, setExpensesState] = useState<any[]>([])
-  const [newBudget, setNewBudget] = useState<number>(0)
-  const [expenseAmount, setExpenseAmount] = useState(0)
+  const [newBudget, setNewBudget] = useState('')
+  const [expenseAmount, setExpenseAmount] = useState('')
   const [expenseDescription, setExpenseDescription] = useState('')
   const [expenseDate, setExpenseDate] = useState('')
   const [showResetConfirm, setShowResetConfirm] = useState(false)
@@ -70,10 +70,10 @@ export default function Dashboard() {
   const handleSetBudget = async () => {
     try {
       if (user.id && newBudget) {
-        const response = await setBudget(user.id, newBudget) as unknown as any
+        const response = await setBudget(user.id, parseFloat(newBudget)) as unknown as any
         if (response.data) {
           await fetchBudget()
-          setNewBudget(0)
+          setNewBudget('')
           toast.success('Budget set successfully')
         }
       }
@@ -85,11 +85,11 @@ export default function Dashboard() {
 
   const handleAddExpense = async () => {
     try {
-      if (user.id && expenseAmount > 0) {
-        const response = await addExpense(user.id, expenseAmount, expenseDescription, new Date(expenseDate)) as unknown as any
+      if (user.id && parseFloat(expenseAmount) > 0) {
+        const response = await addExpense(user.id, parseFloat(expenseAmount), expenseDescription, expenseDate ? new Date(expenseDate) : new Date()) as unknown as any
         if (response.data) {
           await fetchExpenses()
-          setExpenseAmount(0)
+          setExpenseAmount('')
           setExpenseDescription('')
           setExpenseDate('')
           toast.success('Expense added successfully')
@@ -229,9 +229,14 @@ export default function Dashboard() {
                 <h2 className="mb-8 text-4xl font-bold">Add Expenses</h2>
                 <div className="w-full max-w-md space-y-4">
                   <input
-                    type="number"
+                    type="text"
                     value={expenseAmount}
-                    onChange={(e) => setExpenseAmount(Number(e.target.value))}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      if (value === '' || /^\d+$/.test(value)) {
+                        setExpenseAmount(value === '' ? '' : Number(value).toString());
+                      }
+                    }}
                     placeholder="Enter amount"
                     className="w-full p-4 border border-[#ca9a5c]-300 rounded-lg"
                   />
@@ -279,9 +284,14 @@ export default function Dashboard() {
                             className="p-1 border rounded"
                           />
                           <input
-                            type="number"
+                            type="text"
                             value={updatedAmount}
-                            onChange={(e) => setUpdatedAmount(Number(e.target.value))}
+                            onChange={(e) => {
+                              const value = e.target.value;
+                              if (value === '' || /^\d+$/.test(value)) {
+                                setUpdatedAmount(value === '' ? 0 : Number(value));
+                              }
+                            }}
                             className="p-1 border rounded"
                           />
                           <input
@@ -338,29 +348,47 @@ export default function Dashboard() {
 
             {activeTab === 'budget' && (
               <div className="flex flex-col items-center justify-center h-full bg-[#c99a5b] rounded-lg">
-                <div className="flex items-center mb-8 space-x-4 text-lg text-gray-600">
-                  <div className="p-10 bg-white rounded-lg shadow-md">Set Budget</div>
-                  <div>-</div>
-                  <div className="p-10 bg-white rounded-lg shadow-md">The amount of your expenses</div>
-                  <div className=''>-</div>
-                  <div className="p-10 bg-white rounded-lg shadow-md">The remaining balance of your budget</div>
-                </div>
-                <div className="w-full max-w-md space-y-2">
-                  <p className="text-lg text-gray-700">
-                    <span className="font-semibold">Current Budget:</span> {budget !== null ? `${budget}` : 'Not set'}
-                  </p>
-                  <p className="text-lg text-gray-700">
-                    <span className="font-semibold">Total Expenses:</span> ₱{expenses.reduce((sum, expense) => sum + expense.value, 0)}
-                  </p>
-                  <p className="text-lg text-gray-700">
-                    <span className="font-semibold">Remaining Budget:</span> {calculateRemainingBudget() !== null ? `₱${calculateRemainingBudget()}` : 'N/A'}
-                  </p>
+
+                <div className="w-full max-w-md space-x-8 space-y-2 text-lg">
+                  <table className='w-full'>
+                    <tbody>
+                      <tr>
+                        <td width={350}>
+                          <span className="font-semibold">Current Budget:</span>
+                        </td>
+                        <td>
+                          ₱{budget !== null ? `${budget}` : 'Not set'}
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <span className="font-semibold">Total Expenses:</span>
+                        </td>
+                        <td>
+                          ₱{expenses.reduce((sum, expense) => sum + expense.value, 0)}
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                        <span className="font-semibold">Remaining Budget:</span>
+                        </td>
+                        <td>
+                        {calculateRemainingBudget() !== null ? `₱${calculateRemainingBudget()}` : 'N/A'}
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
 
                   <div className="flex flex-col items-center mt-2">
                     <input
-                      type="number"
+                      type="text"
                       value={newBudget}
-                      onChange={(e) => setNewBudget(Number(e.target.value))}
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        if (value === '' || /^\d+$/.test(value)) {
+                          setNewBudget(value === '' ? '' : Number(value).toString());
+                        }
+                      }}
                       placeholder="Set new budget"
                       className="w-full max-w-sm p-4 mb-4 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-yellow -400"
                     />
