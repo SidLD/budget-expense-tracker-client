@@ -25,8 +25,13 @@ export default function Dashboard() {
     if (!auth.getToken()) {
       router('/')
     } else {
+      const currentTime = Date.now(); 
+     if(currentTime >= auth.getExpiration() * 1000){
+      router('/')
+     }else{
       fetchBudget()
       fetchExpenses()
+     }
     }
   }, [])
 
