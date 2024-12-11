@@ -1,6 +1,7 @@
 import axios from "axios";;
 import { dataHeader } from "./helper";
 import { LoginFormData, SignUpFormData } from "./interface";
+import { auth } from "./services";
 console.log(import.meta.env.VITE_API_URL)
 export const login = (data:LoginFormData) => {
     return new Promise((resolve, reject) => {
@@ -97,7 +98,12 @@ export const getBudget = (userId: string) => {
     axios
       .get(`${import.meta.env.VITE_API_URL}/budget/${userId}`, dataHeader())
       .then((res: any) => {
-        resolve(res);
+        if(res.data.isLoggingIn == false){
+          auth.clear()
+          window.location.href = '/'
+        }else {
+          resolve(res);
+        }
       })
       .catch((err: any) => {
         reject(err);
@@ -111,7 +117,12 @@ export const getExpenses = (userId: string) => {
     axios
       .get(`${import.meta.env.VITE_API_URL}/expense/${userId}`, dataHeader())
       .then((res: any) => {
-        resolve(res);
+        if(res.data.isLoggingIn == false){
+          auth.clear()
+          window.location.href = '/'
+        }else {
+          resolve(res);
+        }
       })
       .catch((err: any) => {
         reject(err);
