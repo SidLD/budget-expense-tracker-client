@@ -7,9 +7,12 @@ import { SignUpModal } from './signup'
 import { login } from '@/lib/api'
 import { auth } from '@/lib/services'
 import { Eye, EyeOff } from 'lucide-react'
+import { Toaster } from "@/components/ui/toaster"
+import { useToast } from '@/hooks/use-toast'
 
 export default function LoginPage() {
   const router = useNavigate()
+  const { toast } = useToast()
   const [loginData, setLoginData] = useState<LoginFormData>({
     username: '',
     password: ''
@@ -25,18 +28,22 @@ export default function LoginPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     try {
-      await login(loginData)
-      .then((data:any) => {
-        if(data.data){
-          auth.storeToken(data.data.token)
-          router('/user')
-        }
-      })
-      .catch((err:any) => {
-        console.log(err)
-      })
+      const data = await login(loginData) as unknown as any
+      if(data.data){
+        auth.storeToken(data.data.token)
+        toast({
+          title: "Login Successful",
+          description: "You have been successfully logged in.",
+        })
+        router('/user')
+      }
     } catch (error) {
-      
+      toast({
+        title: "Login Failed",
+        description: "Please check your username and password.",
+        variant: "destructive",
+      })
+      console.error(error)
     }
   }
 
@@ -87,6 +94,7 @@ export default function LoginPage() {
           </div>
         </form>
       </main>
+      <Toaster />
     </div>
   )
 }
