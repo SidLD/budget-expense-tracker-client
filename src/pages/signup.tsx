@@ -21,8 +21,7 @@ export function SignUpModal() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const navigate = useNavigate()
 
-  const handleSubmitRegistration = async (e: React.FormEvent) => {
-    e.preventDefault()
+  const handleSubmitRegistration = async () => {
     try {
       if(formData.password !== formData.confirmPassword){
         toast({
@@ -68,7 +67,7 @@ export function SignUpModal() {
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[350px] bg-[#f0f0f0] rounded-[15px]">
-        <form onSubmit={handleSubmitRegistration} className="space-y-4">
+        <div className="space-y-4">
           <h2 className="text-2xl font-bold text-center text-black">Sign Up</h2>
           <Input
             placeholder="Create Username"
@@ -112,7 +111,7 @@ export function SignUpModal() {
             </button>
           </div>
           <div className="flex justify-center space-x-4">
-            <Button type="submit" className="w-24 h-12 bg-[#8f6b07] hover:bg-[#dab641] text-white rounded-lg">
+            <Button onClick={handleSubmitRegistration} className="w-24 h-12 bg-[#8f6b07] hover:bg-[#dab641] text-white rounded-lg">
               Sign Up
             </Button>
             <DialogTrigger asChild>
@@ -121,7 +120,7 @@ export function SignUpModal() {
               </Button>
             </DialogTrigger>
           </div>
-        </form>
+        </div>
       </DialogContent>
     </Dialog>
   )
